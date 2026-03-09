@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>nook__mook</title>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cream: #f4f0e8;
+      --ink: #1a1814;
+      --faded: #7a7060;
+      --accent: #c4432a;
+      --paper: #ede8dc;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--ink);
+      color: var(--cream);
+      font-family: 'Courier Prime', monospace;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── FULLSCREEN VIDEO ── */
+    .video-section {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+    }
+
+    .video-section video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .video-placeholder {
+      width: 100%;
+      height: 100%;
+      background: var(--ink);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      color: rgba(244, 240, 232, 0.25);
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: lowercase;
+    }
+
+    .play-circle {
+      width: 56px;
+      height: 56px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      padding-left: 4px;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.45) 0%,
+        rgba(0,0,0,0.05) 40%,
+        rgba(0,0,0,0.05) 60%,
+        rgba(0,0,0,0.55) 100%
+      );
+      pointer-events: none;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      padding: 1.8rem 2.5rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center; /* center everything */
+    }
+
+    /* centered title */
+    .site-title {
+      font-family: 'Special Elite', cursive;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      letter-spacing: 0.04em;
+      color: var(--cream);
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .site-title span {
+      color: var(--accent);
+    }
+
+    /* hamburger button — top right corner */
+    .hamburger {
+      position: fixed;
+      top: 1.8rem;
+      right: 2.5rem;
+      z-index: 20;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      align-items: flex-end;
+    }
+
+    .hamburger .bar {
+      display: block;
+      height: 1.5px;
+      background: var(--cream);
+      transition: transform 0.35s ease, opacity 0.35s ease, width 0.35s ease;
+    }
+
+    .hamburger .bar:nth-child(1) { width: 26px; }
+    .hamburger .bar:nth-child(2) { width: 18px; }
+    .hamburger .bar:nth-child(3) { width: 22px; }
+
+    /* open state — forms an X */
+    .hamburger.open .bar:nth-child(1) {
+      width: 24px;
+      transform: translateY(6.5px) rotate(45deg);
+    }
+    .hamburger.open .bar:nth-child(2) {
+      opacity: 0;
+      width: 0;
+    }
+    .hamburger.open .bar:nth-child(3) {
+      width: 24px;
+      transform: translateY(-6.5px) rotate(-45deg);
+    }
+
+    /* ── NAV MENU (fullscreen overlay) ── */
+    nav {
+      position: fixed;
+      inset: 0;
+      z-index: 15;
+      background: rgba(26, 24, 20, 0.97);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    nav.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    nav a {
+      font-family: 'Special Elite', cursive;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      letter-spacing: 0.08em;
+      color: var(--cream);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      position: relative;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.3s ease, transform 0.3s ease, color 0.2s;
+    }
+
+    nav.open a {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* staggered reveal */
+    nav.open a:nth-child(1) { transition-delay: 0.05s; }
+    nav.open a:nth-child(2) { transition-delay: 0.1s; }
+    nav.open a:nth-child(3) { transition-delay: 0.15s; }
+    nav.open a:nth-child(4) { transition-delay: 0.2s; }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    /* small handmade underline on hover */
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 1rem;
+      right: 1rem;
+      height: 1.5px;
+      background: var(--accent);
+      transform: scaleX(0) rotate(-0.3deg);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+
+    nav a:hover::after {
+      transform: scaleX(1) rotate(-0.3deg);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      padding: 1.2rem 2.5rem 1.8rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    .footer-note {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: lowercase;
+      color: rgba(244, 240, 232, 0.45);
+      font-style: italic;
+    }
+
+    .scroll-hint {
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: rgba(244, 240, 232, 0.45);
+      animation: blink 2.5s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.45; }
+      50%       { opacity: 0.12; }
+    }
+
+    /* ── FADE IN ── */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    header  { animation: fadeIn 1.2s ease 0.3s both; }
+    footer  { animation: fadeIn 1.2s ease 0.6s both; }
+    .overlay { animation: fadeIn 1.5s ease both; }
+    .hamburger { animation: fadeIn 1.2s ease 0.3s both; }
+
+  </style>
+</head>
+<body>
+
+  <!-- FULLSCREEN VIDEO -->
+  <section class="video-section">
+    <!--
+      TO ADD YOUR VIDEO:
+      Remove the div.video-placeholder below and uncomment the <video> tag.
+      Put your video file (e.g. timelapse.mp4) in the same folder as index.html.
+
+      <video autoplay muted loop playsinline>
+        <source src="timelapse.mp4" type="video/mp4">
+      </video>
+    -->
+    <div class="video-placeholder">
+      <div class="play-circle">▶</div>
+      <span>your timelapse here</span>
+    </div>
+  </section>
+
+  <!-- GRADIENT OVERLAY -->
+  <div class="overlay"></div>
+
+  <!-- HEADER — centered title -->
+  <header>
+    <a href="index.html" class="site-title">nook<span>__</span>mook</a>
+  </header>
+
+  <!-- HAMBURGER BUTTON -->
+  <button class="hamburger" id="menuBtn" aria-label="open menu">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
+
+  <!-- FULLSCREEN NAV -->
+  <nav id="mainNav">
+    <a href="index.html">home</a>
+    <a href="about.html">about</a>
+    <a href="gallery.html">gallery</a>
+    <a href="shop.html">shop</a>
+  </nav>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-note">a home for floating creative work</span>
+    <span class="scroll-hint">scroll ↓</span>
+  </footer>
+
+  <script>
+    const btn = document.getElementById('menuBtn');
+    const nav = document.getElementById('mainNav');
+
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('open');
+      nav.classList.toggle('open');
+    });
+
+    // close menu when a link is clicked
+    nav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        btn.classList.remove('open');
+        nav.classList.remove('open');
+      });
+    });
+  </script>
+
+</body>
+</html>
