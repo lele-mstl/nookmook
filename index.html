@@ -255,10 +255,11 @@
 
       /* video is no longer fixed/fullscreen on mobile */
       .video-section {
-        transform: translate(-50%, -50%) scale(0.95); /* 0.95=95%に縮小 */
-        width: 100%;
+        position: relative;
+        transform: scale(0.95);
+        width: 95%;
         aspect-ratio: 9 / 16;
-        height: 100%;
+        height: 95%;
         object-fit: cover;
       }
       
