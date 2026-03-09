@@ -25,6 +25,7 @@
       color: var(--main);
       font-family: 'Courier Prime', monospace;
       height: 100vh;
+      height: -webkit-fill-available; /* Safari iPhone fix */
       overflow: hidden;
     }
 
@@ -34,6 +35,7 @@
       inset: 0;
       width: 100vw;
       height: 100vh;
+      height: -webkit-fill-available; /* Safari iPhone fix */
       z-index: 0;
       display: flex;
       align-items: center;
@@ -96,6 +98,12 @@
 
       .video-section video:active {
         cursor: grabbing;
+      }
+
+      /* fix title being cut off on small screens */
+      .site-title {
+        font-size: 1.3rem;
+        padding-right: 3rem; /* leave room for hamburger */
       }
     }
     
@@ -299,7 +307,7 @@
       <span>your timelapse here</span>
     </div>
     -->
-    <video id="mainVideo" autoplay muted playsinline>
+    <video id="mainVideo" autoplay muted playsinline webkit-playsinline x-webkit-airplay="deny" disableRemotePlayback>
         <source src="timelapse.mp4" type="video/mp4">
       </video>
   </section>
