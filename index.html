@@ -243,6 +243,57 @@
       50%       { opacity: 0.12; }
     }
 
+    /* ── MOBILE: smaller video, scrollable layout ── */
+    @media (max-width: 640px) {
+
+      body {
+        height: auto;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* video is no longer fixed/fullscreen on mobile */
+      .video-section {
+        position: relative;
+        inset: unset;
+        width: 100vw;
+        height: auto;
+        padding: 6rem 1.5rem 1.5rem; /* top padding leaves room for header */
+      }
+
+      .video-section video {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        border-radius: 2px;
+        box-shadow: 0 4px 28px rgba(0,0,0,0.5);
+      }
+
+      .video-placeholder {
+        width: 100%;
+        aspect-ratio: 9 / 16;
+        height: auto;
+        border-radius: 2px;
+        box-shadow: 0 4px 28px rgba(0,0,0,0.5);
+      }
+
+      header {
+        position: fixed; /* keep header visible while scrolling */
+        padding: 1.4rem 1.5rem 1rem;
+      }
+
+      .hamburger {
+        top: 1.4rem;
+        right: 1.5rem;
+      }
+
+      footer {
+        position: relative;
+        padding: 1.5rem;
+      }
+    }
+
     /* ── FADE IN ── */
     @keyframes fadeIn {
       from { opacity: 0; }
@@ -251,7 +302,6 @@
 
     header  { animation: fadeIn 1.2s ease 0.3s both; }
     footer  { animation: fadeIn 1.2s ease 0.6s both; }
-    .overlay { animation: fadeIn 1.5s ease both; }
     .hamburger { animation: fadeIn 1.2s ease 0.3s both; }
 
   </style>
@@ -278,9 +328,6 @@
         <source src="timelapse.mp4" type="video/mp4">
       </video>
   </section>
-
-  <!-- GRADIENT OVERLAY -->
-  <div class="overlay"></div>
 
   <!-- HEADER — centered title -->
   <header>
