@@ -255,26 +255,13 @@
 
       /* video is no longer fixed/fullscreen on mobile */
       .video-section {
-        position: relative;
-        inset: unset;
-        width: auto;
-        height: 80vw;
-      }
-
-      .video-section video {
-        width: auto;
-        height: 80%;
-        object-fit: contain;
-        border-radius: 2px;
-      }
-
-      .video-placeholder {
-        width: auto;
+        transform: translate(-50%, -50%) scale(0.95); /* 0.95=95%に縮小 */
+        width: 100%;
         aspect-ratio: 9 / 16;
-        height: 80%;
-        border-radius: 2px;
+        height: 100%;
+        object-fit: cover;
       }
-
+      
       header {
         position: fixed; /* keep header visible while scrolling */
         padding: 1.4rem 1.5rem 1rem;
